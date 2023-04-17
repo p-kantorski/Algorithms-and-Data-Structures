@@ -16,7 +16,6 @@ void TestBubbleSort2();
 
 int main()
 {
-    int *tablica = new int[100];
     srand(time(NULL));
     TestBubbleSort1();
     TestBubbleSort2();
