@@ -1,7 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include <time.h>
+#include <chrono>
 
+using namespace std::chrono;
 using namespace std;
 
 int *RandomTable(int length);
@@ -59,7 +61,7 @@ int InterSearch(int *tab, int length, int s, int &steps)
     return -1;
 }
 
-float InterSearchStatistics(float max_iterations, int length)
+float InterSearchStatistics(int max_iterations, int length)
 {
     int steps = 0;
     for(int i = 0; i < max_iterations; i++)
@@ -69,7 +71,7 @@ float InterSearchStatistics(float max_iterations, int length)
         InterSearch(tab, length, tab[LosujIndeks(length)], steps);
         delete [] tab;
     }
-    return steps/max_iterations;
+    return (float(steps) / float (max_iterations));
 }
 
 int LosujIndeks(int length)
@@ -106,10 +108,15 @@ void QuickSort(int *tab, int left, int right)
 void TestInterSearch()
 {
     ofstream file("intersearch.txt");
-    const float y = 1000;
+    const int y = 1000;
     for(int i = 10; i<=10000; i+=10)
     {
-        file << i <<" "<<InterSearchStatistics(y, i)<<endl;
+        file << i << " ";
+        auto start = high_resolution_clock::now();
+        file << InterSearchStatistics(y,i) << " ";
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<milliseconds>(stop - start);
+        file << duration.count() << endl;
     }
     file.close();
 }
