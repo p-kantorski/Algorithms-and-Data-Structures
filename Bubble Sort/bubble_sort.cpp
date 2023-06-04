@@ -1,7 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include <time.h>
+#include <chrono>
 
+using namespace std::chrono;
 using namespace std;
 
 int *RandomTable(int length);
@@ -92,7 +94,7 @@ int BubbleSort2(int *tab, int length)
     return comp;
 }
 
-float BubbleSortStatistics1(float max_iterations, int length)
+float BubbleSortStatistics1(int max_iterations, int length)
 {
     int steps = 0;
     for(int i = 0; i < max_iterations; i++)
@@ -101,10 +103,10 @@ float BubbleSortStatistics1(float max_iterations, int length)
         steps += BubbleSort1(tab, length);
         delete [] tab;
     }
-    return steps/max_iterations;
+    return (float(steps) / float (max_iterations));
 }
 
-float BubbleSortStatistics2(float max_iterations, int length)
+float BubbleSortStatistics2(int max_iterations, int length)
 {
     int steps = 0;
     for(int i = 0; i < max_iterations; i++)
@@ -113,16 +115,21 @@ float BubbleSortStatistics2(float max_iterations, int length)
         steps += BubbleSort2(tab, length);
         delete [] tab;
     }
-    return steps/max_iterations;
+    return (float(steps) / float (max_iterations));
 }
 
 void TestBubbleSort1()
 {
     ofstream file("bubblesort1.txt");
-    const float y = 100;
+    const int y = 100;
     for(int i = 10; i<=1000; i+=10)
     {
-        file << i <<" "<< BubbleSortStatistics1(y, i)<<endl;
+        file << i << " ";
+        auto start = high_resolution_clock::now();
+        file << BubbleSortStatistics1(y,i) << " ";
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<milliseconds>(stop - start);
+        file << duration.count() << endl;
     }
     file.close();
 }
@@ -130,10 +137,15 @@ void TestBubbleSort1()
 void TestBubbleSort2()
 {
     ofstream file("bubblesort2.txt");
-    const float y = 100;
+    const int y = 100;
     for(int i = 10; i<=1000; i+=10)
     {
-        file << i <<" "<< BubbleSortStatistics2(y, i)<<endl;
+        file << i << " ";
+        auto start = high_resolution_clock::now();
+        file << BubbleSortStatistics2(y,i) << " ";
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<milliseconds>(stop - start);
+        file << duration.count() << endl;
     }
     file.close();
 }
