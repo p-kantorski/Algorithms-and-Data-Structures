@@ -1,7 +1,8 @@
 #include <iostream>
 #include <fstream>
 #include <time.h>
-
+#include <chrono>
+using namespace std::chrono;
 using namespace std;
 
 int BinarySearch(int *tab, int length, int s, int &steps);
@@ -54,7 +55,7 @@ void Swap(int *tab, int idx_a, int idx_b)
     tab[idx_b] = c;
 }
 
-float BinarySearchStatistics(float max_iterations, int length)
+float BinarySearchStatistics(int max_iterations, int length)
 {
     int steps = 0;
     for(int i = 0; i < max_iterations; i++)
@@ -64,7 +65,7 @@ float BinarySearchStatistics(float max_iterations, int length)
         BinarySearch(tab, length, tab[LosujIndeks(length)], steps);
         delete [] tab;
     }
-    return steps/max_iterations;
+    return (float(steps) / float (max_iterations));
 }
 
 int LosujIndeks(int length)
@@ -101,10 +102,15 @@ void QuickSort(int *tab, int left, int right)
 void TestBinarySearch()
 {
     ofstream file("binarysearch.txt");
-    const float y = 1000;
+    const int y = 1000;
     for(int i = 10; i<=10000; i+=10)
     {
-        file << i <<" "<<BinarySearchStatistics(y, i)<<endl;
+        file << i << " ";
+        auto start = high_resolution_clock::now();
+        file << BinarySearchStatistics(y,i) << " ";
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<milliseconds>(stop - start);
+        file << duration.count() << endl;
     }
     file.close();
 }
