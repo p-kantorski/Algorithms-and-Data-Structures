@@ -1,6 +1,9 @@
 #include <iostream>
 #include <fstream>
 #include <time.h>
+#include <chrono>
+
+using namespace std::chrono;
 using namespace std;
 
 int *RandomTable(int length);
@@ -54,7 +57,7 @@ void QuickSort(int *tab, int left, int right, int &steps)
     QuickSort(tab, pos+1, right, steps);
 }
 
-float QuickSortStatistics(float max_iterations, int length)
+float QuickSortStatistics(int max_iterations, int length)
 {
     int steps = 0;
     for(int i = 0; i < max_iterations; i++)
@@ -63,17 +66,22 @@ float QuickSortStatistics(float max_iterations, int length)
         QuickSort(tab, 0, length-1, steps);
         delete [] tab;
     }
-    return steps/max_iterations;
+    return (float(steps) / float(max_iterations));
 }
 
 
 void TestQuickSort()
 {
     ofstream file("quicksort.txt");
-    const float y = 1000;
+    const int y = 1000;
     for(int i = 10; i<=10000; i+=10)
     {
-        file << i <<" "<< QuickSortStatistics(y, i)<<endl;
+        file << i << " ";
+        auto start = high_resolution_clock::now();
+        file << QuickSortStatistics(y,i) << " ";
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<milliseconds>(stop - start);
+        file << duration.count() << endl;
     }
     file.close();
 }
