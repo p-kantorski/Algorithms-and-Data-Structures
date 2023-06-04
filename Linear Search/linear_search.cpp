@@ -1,20 +1,21 @@
 #include <iostream>
-#include <time.h>
-#include <cstdlib>
 #include <fstream>
+#include <time.h>
+#include <chrono>
 
+using namespace std::chrono;
 using namespace std;
 
 int *RandomTable(int length);
 int SequentialSearch(int *tab, int length, int searched, int &steps);
+float SequentialSearchStatistics(int max_iterations, int length);
 int LosujIndeks(int length);
-void TestSearch();
+void TestSequentialSearch();
 
 int main(){
-srand(time(NULL));
-
-TestSearch();
-return 0;
+    srand(time(NULL));
+    TestSequentialSearch();
+    return 0;
 }
 
 int *RandomTable(int length)
@@ -58,7 +59,7 @@ int LosujIndeks(int length)
     return r;
 }
 
-double SequentialSearchStatistics(double max_iterations, int length)
+float SequentialSearchStatistics(int max_iterations, int length)
 {
     int steps = 0;
     int index;
@@ -69,16 +70,21 @@ double SequentialSearchStatistics(double max_iterations, int length)
         SequentialSearch(tab, length, tab[index], steps);
         delete [] tab;
     }
-    return steps/max_iterations;
+    return (float(steps) / float (max_iterations));
 }
 
-void TestSearch()
+void TestSequentialSearch()
 {
     ofstream file("linear_search.txt");
-    const double y = 100;
+    const int y = 100;
     for(int i = 10; i<=1000; i+=10)
     {
-        file << i <<" "<< SequentialSearchStatistics(y, i)<<endl;
+        file << i << " ";
+        auto start = high_resolution_clock::now();
+        file << SequentialSearchStatistics(y,i) << " ";
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<milliseconds>(stop - start);
+        file << duration.count() << endl;
     }
     file.close();
 }
